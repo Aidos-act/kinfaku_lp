@@ -141,6 +141,21 @@ html {
   z-index: 2;
   font-weight: 600;
 }
+.main-visual-heading>h1>span{
+  font-size: 12px;
+  position: relative;
+  z-index: 2;
+}
+.main-visual-heading>h1>span:after{
+  content: '🄬';
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--main-color);
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-text-stroke: 10px var(--main-shadow);
+}
 
 .main-visual-heading>h2 {
   font-size: 28px;
