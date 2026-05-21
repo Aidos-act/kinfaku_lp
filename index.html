@@ -99,7 +99,7 @@
     <section class="main-visual section" aria-labelledby="main-visual-heading">
       <div class="inner-container">
         <div class="main-visual-heading">
-          <h1>金融ファクシミリ新聞</h1>
+          <h1>金融ファクシミリ新聞<span>🄬</span></h1>
           <h2 id="main-visual-heading">
             <span>「金利をマネジメント」</span>
             <span>する経営者の参謀</span>
@@ -560,7 +560,8 @@
         <h3 id="contact-heading">2週間<span class="yellow-highlight">無料トライアル</span></h3>
         <h4>お申込みフォーム</h4>
 
-        <form class="trial-form" action="#" method="post" novalidate>
+        <form class="trial-form" action="send.php" method="post" novalidate>
+          <input type="text" name="company_url" class="form-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="form-body">
             <div class="form-row">
               <div class="form-label">

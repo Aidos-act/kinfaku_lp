@@ -1055,6 +1055,16 @@ html {
   font-weight: 600;
 }
 
+.form-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .form-body {
   margin-top: 45px;
   background: white;
