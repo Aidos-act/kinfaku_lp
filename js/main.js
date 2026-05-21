@@ -7,6 +7,19 @@
   }
 })();
 
+function goToSection(sectionId) {
+  var section = document.getElementById(sectionId);
+  if (!section) return;
+
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  if (history.replaceState) {
+    history.replaceState(null, '', '#' + sectionId);
+  } else {
+    location.hash = sectionId;
+  }
+}
+
 function toggleFaqItem(button) {
   var item = button.closest('.faq-item');
   if (!item) return;
