@@ -1,0 +1,23 @@
+# Copy relevant blocks into your server {} block
+
+server {
+    listen 80;
+    server_name kinfaku.jp www.kinfaku.jp;
+    root /var/www/kinfaku_lp;
+    index index.html;
+
+    # 301: /index.html -> /
+    if ($request_uri ~* "^/index\.html(\?.*)?$") {
+        return 301 /$is_args$args;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Cache static assets (adjust paths as needed)
+    location ~* \.(css|js|jpg|jpeg|png|gif|webp|svg|ico|woff2?)$ {
+        expires 7d;
+        add_header Cache-Control "public, immutable";
+    }
+}
