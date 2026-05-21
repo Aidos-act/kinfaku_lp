@@ -1,15 +1,11 @@
-# Apache: force clean root URL (no /index.html in address bar)
+# Apache: LP deployed under https://example.com/kinfaku/
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
+  RewriteBase /kinfaku/
 
-  # Redirect /index.html to /
-  RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
-  RewriteRule ^index\.html$ / [R=301,L,NE]
-
-  # Optional: redirect trailing slash duplicates (adjust if needed)
-  # RewriteCond %{REQUEST_FILENAME} !-d
-  # RewriteRule ^(.+)/$ /$1 [R=301,L]
+  # Redirect /kinfaku/index.html to /kinfaku/
+  RewriteCond %{THE_REQUEST} \s/kinfaku/index\.html[\s?] [NC]
+  RewriteRule ^index\.html$ /kinfaku/ [R=301,L,NE]
 </IfModule>
 
 # Default document (usually already set on shared hosting)

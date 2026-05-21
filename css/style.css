@@ -91,7 +91,7 @@ html {
 /* Main visual section */
 
 .main-visual {
-  background-image: linear-gradient(#01081485), url(/assets/main-visual-background.webp);
+  background-image: linear-gradient(#01081485), url(../assets/main-visual-background.webp);
   background-position: center 68%;
   background-repeat: no-repeat;
   background-size: 100%;
@@ -112,7 +112,7 @@ html {
   left: -174px;
   width: 415px;
   height: 566px;
-  background-image: url(/assets/main-visual-character-woman.webp);
+  background-image: url(../assets/main-visual-character-woman.webp);
   background-position: center 68%;
   background-repeat: no-repeat;
   z-index: 0;
@@ -246,7 +246,7 @@ html {
   transform: translateY(-50%);
   width: 24px;
   height: 48px;
-  background-image: url(/assets/main-visual-list-back.png);
+  background-image: url(../assets/main-visual-list-back.png);
   background-repeat: no-repeat;
   opacity: 0.3;
 }
@@ -792,7 +792,7 @@ html {
 /* Voice section */
 
 .voice {
-  background-image: url(/assets/voice-background.webp);
+  background-image: url(../assets/voice-background.webp);
   background-size: 100%;
   padding: 80px 0;
 }
