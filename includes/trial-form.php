@@ -4,15 +4,6 @@ declare(strict_types=1);
 
 const KINFAKU_TRIAL_TARGET_PRODUCT = '金融ファクシミリ新聞（2週間無料トライアル）';
 
-const KINFAKU_REFERRAL_LABELS = [
-    'search' => 'Google Yahoo! などの検索結果',
-    'social' => 'Facebook Instagram',
-    'news_site' => 'ビジネス・経済系ニュースサイトの紹介',
-    'referral' => '知人・他経営者からの紹介',
-    'past_subscriber' => '過去に試読・購読したことがある',
-    'other' => 'その他',
-];
-
 /**
  * @return array<string, string>
  */
@@ -57,11 +48,6 @@ function kinfaku_validate_trial_form(array $input): array
     $department = kinfaku_trim_field($input['department'] ?? '');
     $email = kinfaku_trim_field($input['email'] ?? '');
     $tel = kinfaku_trim_field($input['tel'] ?? '');
-    $postal1 = kinfaku_digits_only($input['postal_code_1'] ?? '', 3);
-    $postal2 = kinfaku_digits_only($input['postal_code_2'] ?? '', 4);
-    $address1 = kinfaku_trim_field($input['address_line_1'] ?? '');
-    $address2 = kinfaku_trim_field($input['address_line_2'] ?? '');
-    $referral = kinfaku_trim_field($input['referral_source'] ?? '');
 
     if ($name === '') {
         $errors['name'] = '氏名を入力してください。';
@@ -81,17 +67,6 @@ function kinfaku_validate_trial_form(array $input): array
         $errors['tel'] = '電話番号を入力してください。';
     }
 
-    if ($postal1 !== '' && strlen($postal1) !== 3) {
-        $errors['postal_code_1'] = '郵便番号（上3桁）を正しく入力してください。';
-    }
-    if ($postal2 !== '' && strlen($postal2) !== 4) {
-        $errors['postal_code_2'] = '郵便番号（下4桁）を正しく入力してください。';
-    }
-
-    if ($referral !== '' && !isset(KINFAKU_REFERRAL_LABELS[$referral])) {
-        $errors['referral_source'] = '選択内容が正しくありません。';
-    }
-
     $data = [
         'name' => $name,
         'furigana' => $furigana,
@@ -99,11 +74,6 @@ function kinfaku_validate_trial_form(array $input): array
         'department' => $department,
         'email' => $email,
         'tel' => $tel,
-        'postal_code_1' => $postal1,
-        'postal_code_2' => $postal2,
-        'address_line_1' => $address1,
-        'address_line_2' => $address2,
-        'referral_source' => $referral,
     ];
 
     return [
@@ -230,50 +200,11 @@ function kinfaku_trial_mail_fields(array $data): array
         '会社名' => $data['company'],
         '部署名' => kinfaku_format_optional_field($data['department']),
         '役職名' => '（未入力）',
-        '郵便番号' => kinfaku_format_postal_code($data),
-        '住所' => kinfaku_format_address($data),
         '電話番号' => $data['tel'],
         'FAX番号' => '（未入力）',
         'メールアドレス' => $data['email'],
         '対象商品' => KINFAKU_TRIAL_TARGET_PRODUCT,
-        'ご質問' => kinfaku_format_referral_source($data['referral_source']),
     ];
-}
-
-function kinfaku_format_referral_source(string $referral): string
-{
-    if ($referral === '') {
-        return '（未入力）';
-    }
-
-    return KINFAKU_REFERRAL_LABELS[$referral] ?? $referral;
-}
-
-/**
- * @param array<string, string> $data
- */
-function kinfaku_format_postal_code(array $data): string
-{
-    if ($data['postal_code_1'] === '' && $data['postal_code_2'] === '') {
-        return '（未入力）';
-    }
-
-    return $data['postal_code_1'] . '-' . $data['postal_code_2'];
-}
-
-/**
- * @param array<string, string> $data
- */
-function kinfaku_format_address(array $data): string
-{
-    $postal = kinfaku_format_postal_code($data);
-    $parts = array_filter([
-        $postal !== '（未入力）' ? '〒' . $postal : '',
-        $data['address_line_1'],
-        $data['address_line_2'],
-    ]);
-
-    return $parts !== [] ? implode("\n", $parts) : '（未入力）';
 }
 
 function kinfaku_format_optional_field(string $value): string
@@ -324,10 +255,4 @@ function kinfaku_encode_mime_header(string $text): string
 function kinfaku_trim_field(mixed $value): string
 {
     return trim(strip_tags((string) $value));
-}
-
-function kinfaku_digits_only(mixed $value, int $maxLength): string
-{
-    $digits = preg_replace('/\D/u', '', (string) $value) ?? '';
-    return substr($digits, 0, $maxLength);
 }

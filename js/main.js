@@ -39,24 +39,6 @@
 (function () {
   'use strict';
 
-  var REFERRAL_VALUES = {
-    search: true,
-    social: true,
-    news_site: true,
-    referral: true,
-    past_subscriber: true,
-    other: true
-  };
-
-  var REFERRAL_LABELS = {
-    search: 'Google Yahoo! などの検索結果',
-    social: 'Facebook Instagram',
-    news_site: 'ビジネス・経済系ニュースサイトの紹介',
-    referral: '知人・他経営者からの紹介',
-    past_subscriber: '過去に試読・購読したことがある',
-    other: 'その他'
-  };
-
   var SERVER_ERROR_MESSAGES = {
     invalid: '入力内容をご確認ください。各項目を再度ご確認のうえ、お送りください。',
     send: 'メールの送信に失敗しました。時間をおいて再度お試しください。',
@@ -81,11 +63,6 @@
 
   function trim(value) {
     return String(value || '').trim();
-  }
-
-  function digitsOnly(value, maxLength) {
-    var digits = String(value || '').replace(/\D/g, '');
-    return digits.slice(0, maxLength);
   }
 
   function isValidEmail(email) {
@@ -116,9 +93,6 @@
     var company = trim(data.get('company'));
     var email = trim(data.get('email'));
     var tel = trim(data.get('tel'));
-    var postal1 = digitsOnly(data.get('postal_code_1'), 3);
-    var postal2 = digitsOnly(data.get('postal_code_2'), 4);
-    var referral = trim(data.get('referral_source'));
 
     if (!name) {
       errors.push('氏名を入力してください。');
@@ -136,15 +110,6 @@
     }
     if (!tel) {
       errors.push('電話番号を入力してください。');
-    }
-    if (postal1 !== '' && postal1.length !== 3) {
-      errors.push('郵便番号（上3桁）を正しく入力してください。');
-    }
-    if (postal2 !== '' && postal2.length !== 4) {
-      errors.push('郵便番号（下4桁）を正しく入力してください。');
-    }
-    if (referral && !REFERRAL_VALUES[referral]) {
-      errors.push('選択内容が正しくありません。');
     }
 
     return errors;
@@ -183,33 +148,8 @@
     return trim(value) || '（未入力）';
   }
 
-  function getReferralLabel(value) {
-    return REFERRAL_LABELS[value] || '';
-  }
-
-  function formatAddressSummary(data) {
-    var postal1 = digitsOnly(data.get('postal_code_1'), 3);
-    var postal2 = digitsOnly(data.get('postal_code_2'), 4);
-    var line1 = trim(data.get('address_line_1'));
-    var line2 = trim(data.get('address_line_2'));
-    var lines = [];
-
-    if (postal1 && postal2) {
-      lines.push('〒' + postal1 + '-' + postal2);
-    }
-    if (line1) {
-      lines.push(line1);
-    }
-    if (line2) {
-      lines.push(line2);
-    }
-
-    return lines.length ? lines.join('\n') : '（未入力）';
-  }
-
   function getFormSummaryItems() {
     var data = new FormData(form);
-    var referral = trim(data.get('referral_source'));
 
     return [
       { label: '氏名', value: trim(data.get('name')) },
@@ -217,12 +157,7 @@
       { label: '会社名', value: trim(data.get('company')) },
       { label: '部署名', value: formatOptional(data.get('department')) },
       { label: 'メールアドレス', value: trim(data.get('email')) },
-      { label: '電話番号', value: trim(data.get('tel')) },
-      { label: 'ご住所', value: formatAddressSummary(data) },
-      {
-        label: '金融ファクシミリ新聞をどのように知りましたか？',
-        value: referral ? getReferralLabel(referral) : '（未回答）'
-      }
+      { label: '電話番号', value: trim(data.get('tel')) }
     ];
   }
 
@@ -364,109 +299,6 @@
 
   showServerError();
   showInputStep();
-})();
-
-(function () {
-  'use strict';
-
-  var postal1 = document.getElementById('postal-code-1');
-  var postal2 = document.getElementById('postal-code-2');
-  var autofillBtn = document.querySelector('.form-address-autofill');
-  var addressLine1 = document.getElementById('address-line-1');
-  var form = document.querySelector('.trial-form');
-  var errorsEl = form ? form.querySelector('.form-errors') : null;
-  var isFetching = false;
-
-  if (!postal1 || !postal2 || !autofillBtn || !addressLine1) {
-    return;
-  }
-
-  function convertFullWidthToHalfWidth(value) {
-    return String(value).replace(/[\uFF10-\uFF19\uFF0D\u2212]/g, function (ch) {
-      if (ch === '\uFF0D' || ch === '\u2212') {
-        return '-';
-      }
-      return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
-    });
-  }
-
-  function getPostalCodeDigits() {
-    var combined =
-      convertFullWidthToHalfWidth(postal1.value) +
-      convertFullWidthToHalfWidth(postal2.value);
-    return combined.replace(/-/g, '').replace(/\D/g, '');
-  }
-
-  function updateAutofillButtonState() {
-    autofillBtn.disabled = isFetching || getPostalCodeDigits().length !== 7;
-  }
-
-  function showAutofillError(message) {
-    if (!errorsEl) {
-      return;
-    }
-
-    errorsEl.hidden = false;
-    errorsEl.innerHTML = '<ul><li>' + message + '</li></ul>';
-    errorsEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    errorsEl.focus({ preventScroll: true });
-  }
-
-  function clearAutofillError() {
-    if (!errorsEl || errorsEl.hidden) {
-      return;
-    }
-    errorsEl.hidden = true;
-    errorsEl.innerHTML = '';
-  }
-
-  async function autofillAddress() {
-    var postalCode = getPostalCodeDigits();
-    if (postalCode.length !== 7 || isFetching) {
-      return;
-    }
-
-    isFetching = true;
-    updateAutofillButtonState();
-    var originalLabel = autofillBtn.textContent;
-    autofillBtn.textContent = '取得中...';
-    clearAutofillError();
-
-    try {
-      var response = await fetch(
-        'https://api.zipaddress.net/?zipcode=' + encodeURIComponent(postalCode)
-      );
-      var data = await response.json();
-
-      if (data && data.data) {
-        var address = data.data;
-        var pref = address.pref || '';
-        var city = (address.city || '') + (address.town || '');
-        addressLine1.value = address.fullAddress || pref + city;
-        addressLine1.dispatchEvent(new Event('input', { bubbles: true }));
-      } else {
-        showAutofillError('住所が見つかりませんでした。郵便番号をご確認ください。');
-      }
-    } catch (error) {
-      showAutofillError('住所の取得に失敗しました。時間をおいて再度お試しください。');
-    } finally {
-      isFetching = false;
-      autofillBtn.textContent = originalLabel;
-      updateAutofillButtonState();
-    }
-  }
-
-  postal1.addEventListener('input', function () {
-    clearAutofillError();
-    updateAutofillButtonState();
-  });
-  postal2.addEventListener('input', function () {
-    clearAutofillError();
-    updateAutofillButtonState();
-  });
-  autofillBtn.addEventListener('click', autofillAddress);
-
-  updateAutofillButtonState();
 })();
 
 function goToSection(sectionId) {
