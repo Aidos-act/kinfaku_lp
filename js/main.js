@@ -10,6 +10,35 @@
 (function () {
   'use strict';
 
+  var headerButtons = document.querySelector('.header-buttons');
+  if (!headerButtons) {
+    return;
+  }
+
+  var mobileQuery = window.matchMedia('(max-width: 700px)');
+  var scrollThreshold = 100;
+
+  function updateHeaderButtonsVisibility() {
+    if (!mobileQuery.matches) {
+      headerButtons.classList.remove('is-scroll-visible');
+      return;
+    }
+
+    if (window.scrollY >= scrollThreshold) {
+      headerButtons.classList.add('is-scroll-visible');
+    } else {
+      headerButtons.classList.remove('is-scroll-visible');
+    }
+  }
+
+  window.addEventListener('scroll', updateHeaderButtonsVisibility, { passive: true });
+  mobileQuery.addEventListener('change', updateHeaderButtonsVisibility);
+  updateHeaderButtonsVisibility();
+})();
+
+(function () {
+  'use strict';
+
   var REFERRAL_VALUES = {
     search: true,
     social: true,
