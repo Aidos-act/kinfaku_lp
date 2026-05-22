@@ -1747,13 +1747,13 @@ input {
     width: 92vw;
     max-width: 100%;
     gap: 6.5vw;
-    min-height: 100dvh;
+    /* min-height: 100vh; */
     /* overflow-x: clip; */
   }
 
-  .main-visual-heading{
-    margin-top: 6dvh;
-  }
+  /* .main-visual-heading{
+    margin-top: auto;
+  } */
 
   .main-visual-heading>h1 {
     font-size: 8.6vw;
@@ -1807,7 +1807,6 @@ input {
 
   .main-visual-container>img {
     margin-bottom: -4vw;
-    margin-top: 9dvh;
     margin-left: auto;
     margin-right: 0;
     width: 70%;
@@ -1866,9 +1865,9 @@ input {
   }
 
   .main-visual>.inner-container::after {
-    left: -22dvh;
-    width: 44dvh;
-    height: 58dvh;
+    left: -32vw;
+    width: 80vw;
+    height: 83vw;
     filter: brightness(0.61);
     background-size: contain;
   }
