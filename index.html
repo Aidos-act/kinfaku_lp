@@ -750,9 +750,20 @@
             </fieldset> -->
           </div>
 
+          <div class="form-confirm" hidden>
+            <p class="form-confirm-lead">入力内容をご確認ください。</p>
+            <div class="form-confirm-list" role="list"></div>
+          </div>
+
           <div class="form-submit-area">
             <div class="form-errors" role="alert" aria-live="polite" hidden tabindex="-1"></div>
-            <button type="submit" class="main-button orange">確認する</button>
+            <div class="form-actions form-actions--input">
+              <button type="button" class="main-button orange js-form-to-confirm">確認する</button>
+            </div>
+            <div class="form-actions form-actions--confirm">
+              <button type="button" class="main-button blue js-form-back">修正する</button>
+              <button type="submit" class="main-button orange js-form-send">メールを送信</button>
+            </div>
             <p class="form-notice">※ 無料トライアル終了後に、<br class="sp-only">自動で有料契約へ移行することはありません。<br>3営業日以内に、アクセス用IDをメールでお送りします。</p>
           </div>
         </form>

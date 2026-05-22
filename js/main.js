@@ -48,6 +48,15 @@
     other: true
   };
 
+  var REFERRAL_LABELS = {
+    search: 'Google Yahoo! などの検索結果',
+    social: 'Facebook Instagram',
+    news_site: 'ビジネス・経済系ニュースサイトの紹介',
+    referral: '知人・他経営者からの紹介',
+    past_subscriber: '過去に試読・購読したことがある',
+    other: 'その他'
+  };
+
   var SERVER_ERROR_MESSAGES = {
     invalid: '入力内容をご確認ください。各項目を再度ご確認のうえ、お送りください。',
     send: 'メールの送信に失敗しました。時間をおいて再度お試しください。',
@@ -60,6 +69,15 @@
   }
 
   var errorsEl = form.querySelector('.form-errors');
+  var formBody = form.querySelector('.form-body');
+  var confirmPanel = form.querySelector('.form-confirm');
+  var confirmList = form.querySelector('.form-confirm-list');
+  var confirmBtn = form.querySelector('.js-form-to-confirm');
+  var backBtn = form.querySelector('.js-form-back');
+  var sendBtn = form.querySelector('.js-form-send');
+  var formHeading = document.querySelector('#form_section h4');
+  var isConfirmStep = false;
+  var defaultFormHeading = formHeading ? formHeading.textContent : '';
 
   function trim(value) {
     return String(value || '').trim();
@@ -169,6 +187,117 @@
     errorsEl.focus({ preventScroll: true });
   }
 
+  function formatOptional(value) {
+    return trim(value) || '（未入力）';
+  }
+
+  function getReferralLabel(value) {
+    return REFERRAL_LABELS[value] || '';
+  }
+
+  function formatAddressSummary(data) {
+    var postal1 = digitsOnly(data.get('postal_code_1'), 3);
+    var postal2 = digitsOnly(data.get('postal_code_2'), 4);
+    var line1 = trim(data.get('address_line_1'));
+    var line2 = trim(data.get('address_line_2'));
+    var lines = [];
+
+    if (postal1 && postal2) {
+      lines.push('〒' + postal1 + '-' + postal2);
+    }
+    if (line1) {
+      lines.push(line1);
+    }
+    if (line2) {
+      lines.push(line2);
+    }
+
+    return lines.length ? lines.join('\n') : '（未入力）';
+  }
+
+  function getFormSummaryItems() {
+    var data = new FormData(form);
+    var referral = trim(data.get('referral_source'));
+
+    return [
+      { label: '氏名', value: trim(data.get('name')) },
+      { label: 'ふりがな', value: trim(data.get('furigana')) },
+      { label: '会社名', value: trim(data.get('company')) },
+      { label: '部署名', value: formatOptional(data.get('department')) },
+      { label: 'メールアドレス', value: trim(data.get('email')) },
+      { label: '電話番号', value: trim(data.get('tel')) },
+      { label: 'ご住所', value: formatAddressSummary(data) },
+      {
+        label: '金融ファクシミリ新聞をどのように知りましたか？',
+        value: referral ? getReferralLabel(referral) : '（未回答）'
+      }
+    ];
+  }
+
+  function renderConfirmList() {
+    if (!confirmList) {
+      return;
+    }
+
+    confirmList.innerHTML = getFormSummaryItems()
+      .map(function (item) {
+        var valueHtml = escapeHtml(item.value).replace(/\n/g, '<br>');
+        return (
+          '<div class="form-confirm-row" role="listitem">' +
+          '<p class="form-confirm-label">' + escapeHtml(item.label) + '</p>' +
+          '<p class="form-confirm-value">' + valueHtml + '</p>' +
+          '</div>'
+        );
+      })
+      .join('');
+  }
+
+  function scrollToFormSection() {
+    var section = document.getElementById('form_section');
+    if (!section) {
+      return;
+    }
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showInputStep() {
+    isConfirmStep = false;
+    form.classList.remove('is-confirm-step');
+    if (formBody) {
+      formBody.hidden = false;
+    }
+    if (confirmPanel) {
+      confirmPanel.hidden = true;
+    }
+    if (formHeading) {
+      formHeading.textContent = defaultFormHeading;
+    }
+    if (sendBtn) {
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'メールを送信';
+    }
+  }
+
+  function showConfirmStep() {
+    isConfirmStep = true;
+    form.classList.add('is-confirm-step');
+    if (formBody) {
+      formBody.hidden = true;
+    }
+    renderConfirmList();
+    if (confirmPanel) {
+      confirmPanel.hidden = false;
+    }
+    if (formHeading) {
+      formHeading.textContent = '入力内容の確認';
+    }
+    showFormErrors([]);
+    scrollToFormSection();
+    if (confirmPanel) {
+      confirmPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   function clearQueryParam() {
     if (!history.replaceState) {
       return;
@@ -194,16 +323,45 @@
     clearQueryParam();
   }
 
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', function () {
+      var errors = validateTrialForm();
+      if (errors.length) {
+        showFormErrors(errors);
+        scrollToErrors();
+        return;
+      }
+      showConfirmStep();
+    });
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener('click', function () {
+      showInputStep();
+      scrollToFormSection();
+    });
+  }
+
   form.addEventListener('submit', function (event) {
+    if (!isConfirmStep) {
+      event.preventDefault();
+      return;
+    }
+
     var errors = validateTrialForm();
     if (errors.length) {
       event.preventDefault();
+      showInputStep();
       showFormErrors(errors);
       scrollToErrors();
       return;
     }
 
     showFormErrors([]);
+    if (sendBtn) {
+      sendBtn.disabled = true;
+      sendBtn.textContent = '送信中...';
+    }
   });
 
   form.addEventListener('input', function () {
@@ -213,6 +371,7 @@
   });
 
   showServerError();
+  showInputStep();
 })();
 
 (function () {

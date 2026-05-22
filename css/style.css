@@ -1217,6 +1217,84 @@ input {
   margin-bottom: 0;
 }
 
+.trial-form.is-confirm-step .form-body {
+  display: none;
+}
+
+.form-confirm {
+  margin-top: 45px;
+  background: white;
+  border-radius: 10px;
+  padding: 30px 25px;
+  color: #333333;
+}
+
+.form-confirm-lead {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.form-confirm-list {
+  margin: 0;
+}
+
+.form-confirm-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 17px;
+  padding-bottom: 11px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+.form-confirm-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.form-confirm-label {
+  width: 230px;
+  flex-shrink: 0;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.form-confirm-value {
+  flex: 1;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.form-actions {
+  display: none;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.trial-form:not(.is-confirm-step) .form-actions--input {
+  display: flex;
+}
+
+.trial-form.is-confirm-step .form-actions--confirm {
+  display: flex;
+}
+
+.form-actions--confirm .main-button.blue {
+  background: var(--main-color);
+  box-shadow: 0 3px var(--main-shadow);
+}
+
 .form-submit-area {
   display: flex;
   flex-direction: column;
@@ -1248,7 +1326,7 @@ input {
   margin-top: 6px;
 }
 
-.form-submit-area>button {
+.form-submit-area .form-actions .main-button {
   width: 172px;
   margin-bottom: 15px;
 }
@@ -1669,7 +1747,12 @@ input {
     width: 92vw;
     max-width: 100%;
     gap: 6.5vw;
+    min-height: 100vh;
     /* overflow-x: clip; */
+  }
+
+  .main-visual-heading{
+    margin-top: auto;
   }
 
   .main-visual-heading>h1 {
@@ -2213,7 +2296,37 @@ input {
     margin-top: 8vw;
   }
 
-  .form-submit-area>.main-button.orange {
+  .form-confirm {
+    margin-top: 10vw;
+    padding: 6vw 3vw;
+  }
+
+  .form-confirm-lead {
+    font-size: 4vw;
+    margin-bottom: 5vw;
+  }
+
+  .form-confirm-row {
+    flex-direction: column;
+    gap: 2vw;
+    padding-bottom: 4vw;
+    margin-bottom: 4vw;
+  }
+
+  .form-confirm-label {
+    width: 100%;
+    font-size: 3.55vw;
+  }
+
+  .form-confirm-value {
+    font-size: 3.5vw;
+  }
+
+  .form-actions {
+    gap: 3vw;
+  }
+
+  .form-submit-area .form-actions .main-button {
     width: 41vw;
     text-align: center;
     justify-content: center;
