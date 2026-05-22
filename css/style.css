@@ -1275,6 +1275,10 @@ input {
   font-size: 14px;
   color: #AAAAAA;
 }
+.thanks-footer>p{
+  text-align: center;
+  width: 100%;
+}
 
 .thanks-container {
   height: 100%;
