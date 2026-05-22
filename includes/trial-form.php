@@ -81,18 +81,11 @@ function kinfaku_validate_trial_form(array $input): array
         $errors['tel'] = '電話番号を入力してください。';
     }
 
-    if ($postal1 === '') {
-        $errors['postal_code_1'] = '郵便番号（上3桁）を入力してください。';
-    } elseif (strlen($postal1) !== 3) {
+    if ($postal1 !== '' && strlen($postal1) !== 3) {
         $errors['postal_code_1'] = '郵便番号（上3桁）を正しく入力してください。';
     }
-    if ($postal2 === '') {
-        $errors['postal_code_2'] = '郵便番号（下4桁）を入力してください。';
-    } elseif (strlen($postal2) !== 4) {
+    if ($postal2 !== '' && strlen($postal2) !== 4) {
         $errors['postal_code_2'] = '郵便番号（下4桁）を正しく入力してください。';
-    }
-    if ($address1 === '') {
-        $errors['address_line_1'] = '住所を入力してください。';
     }
 
     if ($referral !== '' && !isset(KINFAKU_REFERRAL_LABELS[$referral])) {

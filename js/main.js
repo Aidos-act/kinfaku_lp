@@ -118,7 +118,6 @@
     var tel = trim(data.get('tel'));
     var postal1 = digitsOnly(data.get('postal_code_1'), 3);
     var postal2 = digitsOnly(data.get('postal_code_2'), 4);
-    var address1 = trim(data.get('address_line_1'));
     var referral = trim(data.get('referral_source'));
 
     if (!name) {
@@ -138,18 +137,11 @@
     if (!tel) {
       errors.push('電話番号を入力してください。');
     }
-    if (!postal1) {
-      errors.push('郵便番号（上3桁）を入力してください。');
-    } else if (postal1.length !== 3) {
+    if (postal1 !== '' && postal1.length !== 3) {
       errors.push('郵便番号（上3桁）を正しく入力してください。');
     }
-    if (!postal2) {
-      errors.push('郵便番号（下4桁）を入力してください。');
-    } else if (postal2.length !== 4) {
+    if (postal2 !== '' && postal2.length !== 4) {
       errors.push('郵便番号（下4桁）を正しく入力してください。');
-    }
-    if (!address1) {
-      errors.push('住所を入力してください。');
     }
     if (referral && !REFERRAL_VALUES[referral]) {
       errors.push('選択内容が正しくありません。');
