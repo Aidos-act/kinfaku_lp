@@ -132,9 +132,9 @@ html {
   bottom: 0;
   left: -174px;
   width: 415px;
-  /* height: 566px; for woman*/
-  height: 600px; /* for man */
-  background-image: url(../assets/main-visual-character-man.webp);
+  height: 566px;/*  for woman*/
+   /* height: 600px;for man */
+  background-image: url(../assets/main-visual-character-woman.webp);
   background-position: center 68%;
   background-repeat: no-repeat;
   z-index: 0;
@@ -1870,11 +1870,11 @@ input {
   }
 
   .main-visual>.inner-container::after {
-    /* left: -32vw; for woman */
-    left: -28vw; /* for man */
+    left: -32vw; /* for woman */
+    /* left: -28vw; for man */
     width: 80vw;
-    /* height: 83vw; for woman */
-    height: 88vw; /* for man */
+    height: 83vw; /* for woman
+    /* height: 88vw; for man */
     filter: brightness(0.61);
     background-size: contain;
   }
