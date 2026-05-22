@@ -7,7 +7,7 @@ declare(strict_types=1);
  */
 return [
     // Admin inbox for trial applications
-    'mail_to' => 'aidos.activision@gmail.com',
+    'mail_to' => 'sano@artytech.jp',
 
     // Envelope / From address (must be allowed on your host)
     'mail_from' => 'noreply@kinfaku.jp',
