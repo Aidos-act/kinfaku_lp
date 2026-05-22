@@ -1637,6 +1637,11 @@ input {
     height: auto;
   }
 
+  .header-buttons .main-button,
+  .main-button.orange{
+    height: 17vw;
+  }
+
   .main-button {
     font-size: 4.6vw;
     padding: 2vw 4vw;
@@ -1647,7 +1652,6 @@ input {
     flex-direction: row;
     align-items: center;
     gap: 2vw;
-    height: -webkit-fill-available;
   }
 
   .main-button.orange>img {
@@ -2214,6 +2218,7 @@ input {
     text-align: center;
     justify-content: center;
     padding: 3vw 4vw;
+    height: 13vw;
   }
 
   .form-notice {
