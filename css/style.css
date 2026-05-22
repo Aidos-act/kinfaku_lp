@@ -1244,7 +1244,7 @@ input {
   list-style: none;
 }
 
-.form-errors li + li {
+.form-errors li+li {
   margin-top: 6px;
 }
 
@@ -1274,6 +1274,39 @@ input {
 .site-footer>p {
   font-size: 14px;
   color: #AAAAAA;
+}
+
+.thanks-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.thanks-container>h1 {
+  font-size: 50px;
+  font-weight: bold;
+  margin: 50px 0;
+  color: var(--blue-highlight);
+}
+
+.thanks-container>.main-button {
+  display: block;
+  width: 200px;
+  margin: 50px auto;
+}
+
+.thanks-main{
+  padding: 4rem 1rem;
+  text-align: center;
+  height: calc(100vh - 110px);
+}
+
+.thanks-notice{
+  font-size: 14px;
+  margin-top: 2rem;
 }
 
 @media (max-width: 1050px) {
@@ -1624,11 +1657,14 @@ input {
     height: 2px;
   }
 
-  .main-visual-heading>h2>span:first-child:after, .main-visual-heading>h2>span:last-child:after{
+  .main-visual-heading>h2>span:first-child:after,
+  .main-visual-heading>h2>span:last-child:after {
     top: 1.1vw;
   }
 
-  .main-visual-heading>h1:after, .main-visual-heading>h2>span:first-child:after, .main-visual-heading>h2>span:last-child:after{
+  .main-visual-heading>h1:after,
+  .main-visual-heading>h2>span:first-child:after,
+  .main-visual-heading>h2>span:last-child:after {
     -webkit-text-stroke: 7px var(--main-shadow);
   }
 
@@ -2132,11 +2168,11 @@ input {
     font-size: 3.2vw;
   }
 
-  .trial-form{
+  .trial-form {
     margin: 0 4vw;
   }
 
-  input{
+  input {
     padding: 3vw 1.5vw;
   }
 
@@ -2155,7 +2191,28 @@ input {
     font-size: 3.1vw;
   }
 
-  .form-errors li{
+  .form-errors li {
     font-size: 3.2vw;
+  }
+
+  .thanks-container{
+    width: 100%;
+  }
+  .thanks-container>h1{
+    font-size: 7vw;
+    margin: 7vw 0;
+  }
+  .thanks-container>p{
+    font-size: 3.7vw;
+  }
+  .thanks-container>.thanks-notice{
+    font-size: 3.2vw;
+  }
+  .thanks-container>.main-button{
+    width: 60vw;
+  }
+  .thanks-main{
+    height: calc(100vh - 60vw);
+    min-height: 105vw;
   }
 }
