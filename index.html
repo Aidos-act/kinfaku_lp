@@ -641,21 +641,22 @@
 
             <div class="form-row form-row--address">
               <div class="form-label">
-                <label for="address">ご住所</label>
+                <label for="address-line-1">ご住所</label>
+                <span class="required-badge">必須</span>
               </div>
               <div class="form-field form-field--address">
                 <div class="form-address-postal">
                   <p class="form-address-postal-label">郵便番号</p>
                   <div class="form-address-postal-inputs">
                     <input type="text" id="postal-code-1" name="postal_code_1" inputmode="numeric" maxlength="3"
-                        pattern="[0-9]{3}" aria-label="郵便番号（上3桁）">
+                        pattern="[0-9]{3}" aria-label="郵便番号（上3桁）" required>
                     <span class="form-address-hyphen" aria-hidden="true">-</span>
                     <input type="text" id="postal-code-2" name="postal_code_2" inputmode="numeric" maxlength="4"
-                        pattern="[0-9]{4}" aria-label="郵便番号（下4桁）">
-                    <button type="button" class="form-address-autofill">住所自動入力</button>
+                        pattern="[0-9]{4}" aria-label="郵便番号（下4桁）" required>
+                    <button type="button" class="form-address-autofill" disabled>住所自動入力</button>
                   </div>
                 </div>
-                <input type="text" id="address-line-1" name="address_line_1" autocomplete="address-line1">
+                <input type="text" id="address-line-1" name="address_line_1" autocomplete="address-line1" required>
                 <input type="text" id="address-line-2" name="address_line_2" autocomplete="address-line2">
               </div>
             </div>
@@ -750,6 +751,7 @@
           </div>
 
           <div class="form-submit-area">
+            <div class="form-errors" role="alert" aria-live="polite" hidden tabindex="-1"></div>
             <button type="submit" class="main-button orange">確認する</button>
             <p class="form-notice">※ 無料トライアル終了後に、<br class="sp-only">自動で有料契約へ移行することはありません。<br>3営業日以内に、アクセス用IDをメールでお送りします。</p>
           </div>

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+const KINFAKU_TRIAL_TARGET_PRODUCT = '金融ファクシミリ新聞（2週間無料トライアル）';
+
 const KINFAKU_REFERRAL_LABELS = [
     'search' => 'Google Yahoo! などの検索結果',
     'social' => 'Facebook Instagram',
@@ -79,11 +81,18 @@ function kinfaku_validate_trial_form(array $input): array
         $errors['tel'] = '電話番号を入力してください。';
     }
 
-    if ($postal1 !== '' && strlen($postal1) !== 3) {
+    if ($postal1 === '') {
+        $errors['postal_code_1'] = '郵便番号（上3桁）を入力してください。';
+    } elseif (strlen($postal1) !== 3) {
         $errors['postal_code_1'] = '郵便番号（上3桁）を正しく入力してください。';
     }
-    if ($postal2 !== '' && strlen($postal2) !== 4) {
+    if ($postal2 === '') {
+        $errors['postal_code_2'] = '郵便番号（下4桁）を入力してください。';
+    } elseif (strlen($postal2) !== 4) {
         $errors['postal_code_2'] = '郵便番号（下4桁）を正しく入力してください。';
+    }
+    if ($address1 === '') {
+        $errors['address_line_1'] = '住所を入力してください。';
     }
 
     if ($referral !== '' && !isset(KINFAKU_REFERRAL_LABELS[$referral])) {
@@ -126,7 +135,7 @@ function kinfaku_send_trial_form(array $data): array
         return ['ok' => false, 'error' => 'メール設定が完了していません。'];
     }
 
-    $subject = '【金ファク】無料トライアルお申込み';
+    $subject = '【金ファク トライアルお申込み】';
     $body = kinfaku_build_trial_admin_mail_body($data);
     $headers = kinfaku_build_mail_headers($from, $fromName, $data['email']);
 
@@ -153,23 +162,10 @@ function kinfaku_send_trial_form_autoreply(array $data, array $config): void
         return;
     }
 
-    $subject = '【金融ファクシミリ新聞】無料トライアルお申込みを受け付けました';
-    $body = <<<TEXT
-{$data['name']} 様
-
-この度は金融ファクシミリ新聞の無料トライアルにお申込みいただき、ありがとうございます。
-以下の内容でお申込みを受け付けました。
-
-3営業日以内に、アクセス用IDをメールでお送りします。
-今しばらくお待ちください。
-
-※ 無料トライアル終了後に、自動で有料契約へ移行することはありません。
-
-────────────────
-金融ファクシミリ新聞社
-TEXT;
-
+    $subject = '【金融ファクシミリ新聞】トライアルお申し込みありがとうございます。';
+    $body = kinfaku_build_trial_autoreply_mail_body($data);
     $headers = kinfaku_build_mail_headers($from, $fromName);
+
     kinfaku_send_mail($data['email'], $subject, $body, $headers);
 }
 
@@ -178,54 +174,118 @@ TEXT;
  */
 function kinfaku_build_trial_admin_mail_body(array $data): string
 {
-    $postal = '';
-    if ($data['postal_code_1'] !== '' || $data['postal_code_2'] !== '') {
-        $postal = $data['postal_code_1'] . '-' . $data['postal_code_2'];
+    $lines = [
+        '金融ファクシミリ新聞 LP より、トライアルお申込みがありました。',
+        '',
+        '【お申込情報】',
+        '',
+    ];
+
+    foreach (kinfaku_trial_mail_fields($data) as $label => $value) {
+        $lines[] = '■ ' . $label;
+        $lines[] = $value;
+        $lines[] = '';
     }
 
-    $addressParts = array_filter([
-        $postal !== '' && $postal !== '-' ? '〒' . $postal : '',
+    $lines[] = '【送信日時】';
+    $lines[] = date('Y-m-d H:i:s');
+    $lines[] = '';
+    $lines[] = '【送信者IPアドレス】';
+    $lines[] = $_SERVER['REMOTE_ADDR'] ?? '（取得不可）';
+
+    return implode("\n", $lines);
+}
+
+/**
+ * @param array<string, string> $data
+ */
+function kinfaku_build_trial_autoreply_mail_body(array $data): string
+{
+    $lines = [
+        $data['name'] . ' 様',
+        '',
+        '金ファク電子版のトライアルお申し込みを頂きありがとうございます。追って弊社営業からご連絡いたします。',
+        '',
+        '【お申込情報】',
+        '',
+    ];
+
+    foreach (kinfaku_trial_mail_fields($data) as $label => $value) {
+        $lines[] = '■ ' . $label;
+        $lines[] = $value;
+        $lines[] = '';
+    }
+
+    $lines[] = '※本メールは送信専用です。返信いただいてもお答えできません。';
+    $lines[] = '';
+    $lines[] = '────────────────';
+    $lines[] = '金融ファクシミリ新聞社';
+    $lines[] = 'https://kinfaku.jp/';
+
+    return implode("\n", $lines);
+}
+
+/**
+ * @param array<string, string> $data
+ * @return array<string, string>
+ */
+function kinfaku_trial_mail_fields(array $data): array
+{
+    return [
+        '名前' => $data['name'],
+        'ふりがな' => $data['furigana'],
+        '会社名' => $data['company'],
+        '部署名' => kinfaku_format_optional_field($data['department']),
+        '役職名' => '（未入力）',
+        '郵便番号' => kinfaku_format_postal_code($data),
+        '住所' => kinfaku_format_address($data),
+        '電話番号' => $data['tel'],
+        'FAX番号' => '（未入力）',
+        'メールアドレス' => $data['email'],
+        '対象商品' => KINFAKU_TRIAL_TARGET_PRODUCT,
+        'ご質問' => kinfaku_format_referral_source($data['referral_source']),
+    ];
+}
+
+function kinfaku_format_referral_source(string $referral): string
+{
+    if ($referral === '') {
+        return '（未入力）';
+    }
+
+    return KINFAKU_REFERRAL_LABELS[$referral] ?? $referral;
+}
+
+/**
+ * @param array<string, string> $data
+ */
+function kinfaku_format_postal_code(array $data): string
+{
+    if ($data['postal_code_1'] === '' && $data['postal_code_2'] === '') {
+        return '（未入力）';
+    }
+
+    return $data['postal_code_1'] . '-' . $data['postal_code_2'];
+}
+
+/**
+ * @param array<string, string> $data
+ */
+function kinfaku_format_address(array $data): string
+{
+    $postal = kinfaku_format_postal_code($data);
+    $parts = array_filter([
+        $postal !== '（未入力）' ? '〒' . $postal : '',
         $data['address_line_1'],
         $data['address_line_2'],
     ]);
-    $address = $addressParts !== [] ? implode("\n", $addressParts) : '（未入力）';
 
-    $referral = '（未回答）';
-    if ($data['referral_source'] !== '') {
-        $referral = KINFAKU_REFERRAL_LABELS[$data['referral_source']] ?? $data['referral_source'];
-    }
+    return $parts !== [] ? implode("\n", $parts) : '（未入力）';
+}
 
-    $lines = [
-        '金融ファクシミリ新聞 LP より、無料トライアルお申込みがありました。',
-        '',
-        '■ 氏名',
-        $data['name'],
-        '',
-        '■ ふりがな',
-        $data['furigana'],
-        '',
-        '■ 会社名',
-        $data['company'],
-        '',
-        '■ 部署名',
-        $data['department'] !== '' ? $data['department'] : '（未入力）',
-        '',
-        '■ メールアドレス',
-        $data['email'],
-        '',
-        '■ 電話番号',
-        $data['tel'],
-        '',
-        '■ ご住所',
-        $address,
-        '',
-        '■ 金融ファクシミリ新聞をどのように知りましたか？',
-        $referral,
-        '',
-        '送信日時: ' . date('Y-m-d H:i:s'),
-    ];
-
-    return implode("\n", $lines);
+function kinfaku_format_optional_field(string $value): string
+{
+    return $value !== '' ? $value : '（未入力）';
 }
 
 /**
