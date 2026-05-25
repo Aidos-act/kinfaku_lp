@@ -79,6 +79,9 @@ html {
   flex-direction: row;
   align-items: stretch;
   gap: 6px;
+  right: 15px;
+  z-index: 100;
+  position: fixed;
 }
 
 .main-button {
@@ -1694,7 +1697,6 @@ input {
     right: 0;
     width: 100%;
     max-width: 100%;
-    z-index: 100;
     flex-direction: row-reverse;
     background: #003fa3cc;
     align-items: center;
