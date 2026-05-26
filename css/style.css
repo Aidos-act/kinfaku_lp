@@ -135,8 +135,9 @@ html {
   bottom: 0;
   left: -174px;
   width: 415px;
-  height: 566px;/*  for woman*/
-   /* height: 600px;for man */
+  height: 566px;
+  /*  for woman*/
+  /* height: 600px;for man */
   background-image: url(../assets/main-visual-character-woman.webp);
   background-position: center 68%;
   background-repeat: no-repeat;
@@ -1357,7 +1358,8 @@ input {
   font-size: 14px;
   color: #AAAAAA;
 }
-.thanks-footer>p{
+
+.thanks-footer>p {
   text-align: center;
   width: 100%;
 }
@@ -1384,13 +1386,13 @@ input {
   margin: 50px auto;
 }
 
-.thanks-main{
+.thanks-main {
   padding: 4rem 1rem;
   text-align: center;
   height: calc(100vh - 110px);
 }
 
-.thanks-notice{
+.thanks-notice {
   font-size: 14px;
   margin-top: 2rem;
 }
@@ -1639,12 +1641,20 @@ input {
     padding: 1px 6px;
   }
 
-  .main-visual>.inner-container::after{
-    left: -120px; /* for man */
+  .main-visual>.inner-container::after {
+    left: -120px;
+    /* for man */
+  }
+
+  .site-footer {
+    gap: 20px;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 700px) {
+
   html,
   body {
     overflow-x: hidden;
@@ -1723,7 +1733,7 @@ input {
   }
 
   .header-buttons .main-button,
-  .main-button.orange{
+  .main-button.orange {
     height: 17vw;
   }
 
@@ -1872,10 +1882,12 @@ input {
   }
 
   .main-visual>.inner-container::after {
-    left: -32vw; /* for woman */
+    left: -32vw;
+    /* for woman */
     /* left: -28vw; for man */
     width: 80vw;
-    height: 83vw; /* for woman
+    height: 83vw;
+    /* for woman
     /* height: 88vw; for man */
     filter: brightness(0.61);
     background-size: contain;
@@ -2374,23 +2386,28 @@ input {
     font-size: 3.2vw;
   }
 
-  .thanks-container{
+  .thanks-container {
     width: 100%;
   }
-  .thanks-container>h1{
+
+  .thanks-container>h1 {
     font-size: 7vw;
     margin: 7vw 0;
   }
-  .thanks-container>p{
+
+  .thanks-container>p {
     font-size: 3.7vw;
   }
-  .thanks-container>.thanks-notice{
+
+  .thanks-container>.thanks-notice {
     font-size: 3.2vw;
   }
-  .thanks-container>.main-button{
+
+  .thanks-container>.main-button {
     width: 60vw;
   }
-  .thanks-main{
+
+  .thanks-main {
     height: calc(100vh - 60vw);
     min-height: 105vw;
   }
